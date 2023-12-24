@@ -1,55 +1,62 @@
+// Import necessary Flutter packages.
 import 'package:flutter/material.dart';
 import 'package:news_app/detail/detail_screen.dart';
 import 'package:news_app/model/news_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// Define a function to launch a URL asynchronously.
 Future<void> _launchUrl(url) async {
   if (!await launchUrl(url)) {
     throw Exception('Could not launch $url');
   }
 }
 
+// Define the MainScreen widget as a StatelessWidget.
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Return a Scaffold widget with a custom AppBar and NewsList body.
     return const Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0), child: CustomAppBar()),
+        preferredSize: Size.fromHeight(80.0),
+        child: CustomAppBar(),
+      ),
       body: NewsList(),
     );
   }
 }
 
+// Define a CustomAppBar widget as a StatelessWidget.
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
+    // Ensure Flutter is initialized.
+    WidgetsFlutterBinding.ensureInitialized();
 
+    // Return a decorated container with a transparent AppBar.
     return Container(
       decoration: const BoxDecoration(
-        color: Color.fromARGB(
-            255, 125, 5, 45), // Change the background color as needed
+        color: Color.fromARGB(255, 125, 5, 45),
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(
-              20.0), // Adjust the radius for the bottom left corner
-          bottomRight: Radius.circular(
-              20.0), // Adjust the radius for the bottom right corner
+          bottomLeft: Radius.circular(20.0),
+          bottomRight: Radius.circular(20.0),
         ),
       ),
       child: AppBar(
-        elevation: 0, // Remove the appbar's shadow
-        backgroundColor: Colors.transparent, // Make the appbar transparent
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         title: const Text(
           'News App',
           style: TextStyle(
-              fontSize: 24,
-              color: Colors.white,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.bold), // Adjust the text style
+            fontSize: 24,
+            color: Colors.white,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
@@ -57,16 +64,20 @@ class CustomAppBar extends StatelessWidget {
   }
 }
 
+// Define the NewsList widget as a StatelessWidget.
 class NewsList extends StatelessWidget {
   const NewsList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Return a ListView.builder with a list of news articles.
     return ListView.builder(
       itemBuilder: (context, index) {
         final NewsModel newsModel = newsList[index];
+        // Wrap each news item with InkWell to make it tappable.
         return InkWell(
           onTap: () {
+            // Navigate to the DetailMobilePage when tapped.
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return DetailMobilePage(model: newsModel);
             }));
@@ -78,6 +89,7 @@ class NewsList extends StatelessWidget {
     );
   }
 
+  // Define a method to build the content of each news item.
   Padding _buildContentItem(NewsModel newsModel, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -114,6 +126,7 @@ class NewsList extends StatelessWidget {
                 ),
               ),
             ),
+            // Display the image associated with the news article.
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: Image.network(
@@ -128,12 +141,14 @@ class NewsList extends StatelessWidget {
     );
   }
 
+  // Define a method to build the header of each news item.
   Padding _buildHeader(NewsModel newsModel, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
+          // Display the author's name.
           Text(
             newsModel.author,
             style: const TextStyle(
@@ -141,13 +156,16 @@ class NewsList extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          // Add a share button to share the news article URL.
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: () async {
+              // Launch the URL in a WhatsApp message.
               String link = 'whatsapp://send?text=${newsModel.url}';
               try {
                 await _launchUrl(Uri.parse(link));
               } catch (e) {
+                // Show a Snackbar if WhatsApp is not available.
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

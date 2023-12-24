@@ -1,3 +1,4 @@
+// Define a class named NewsModel to represent a news item.
 class NewsModel {
   final String title;
   final String author;
@@ -5,6 +6,7 @@ class NewsModel {
   final String url;
   final String urlToImage;
 
+  // Create a constructor for the NewsModel class to initialize its properties.
   NewsModel({
     required this.title,
     required this.author,
@@ -14,6 +16,7 @@ class NewsModel {
   });
 }
 
+// Create a list of NewsModel instances representing news articles.
 var newsList = [
   NewsModel(
       title:
